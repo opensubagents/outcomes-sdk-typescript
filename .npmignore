@@ -1,0 +1,9 @@
+test/
+.github/
+tsconfig.test.json
+pnpm-lock.yaml
+.gitignore
+.npmignore
+*.log
+.DS_Store
+node_modules/

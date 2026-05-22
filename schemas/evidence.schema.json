@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opensubagents.org/outcome/0.1.0/evidence.schema.json",
+  "title": "Evidence",
+  "description": "Shapes for citations and claims. See specification/sections/04-evidence.md.",
+  "$defs": {
+    "Confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Calibrated confidence label. See specification/sections/05-confidence.md."
+    },
+    "SourceKind": {
+      "type": "string",
+      "enum": ["primary", "secondary", "community"],
+      "description": "Classification of a source. See specification/glossary.md#source-kind."
+    },
+    "Citation": {
+      "type": "object",
+      "required": ["url", "title", "accessed", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?://",
+          "description": "HTTP or HTTPS URL (Requirement 4.1.1)."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable title (Requirement 4.1.2)."
+        },
+        "accessed": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the source was last accessed (Requirement 4.1.3)."
+        },
+        "kind": {
+          "$ref": "#/$defs/SourceKind",
+          "description": "Source classification (Requirement 4.1.4)."
+        },
+        "quote": {
+          "type": "string",
+          "description": "Optional verbatim excerpt anchoring the citation (Requirement 4.1.5)."
+        }
+      }
+    },
+    "Claim": {
+      "type": "object",
+      "required": ["statement", "confidence", "citations"],
+      "additionalProperties": false,
+      "properties": {
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The assertion (Requirement 4.2.1)."
+        },
+        "confidence": {
+          "$ref": "#/$defs/Confidence",
+          "description": "Self-reported confidence (Requirement 4.2.2)."
+        },
+        "citations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Citation" },
+          "description": "Citations supporting the claim (Requirement 4.2.3). MAY be empty for 'low' confidence claims (Requirement 5.1.3)."
+        },
+        "caveats": {
+          "type": "string",
+          "description": "Optional notes on what would change the claim (Requirement 4.2.4)."
+        }
+      }
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/Citation" },
+    { "$ref": "#/$defs/Claim" }
+  ]
+}

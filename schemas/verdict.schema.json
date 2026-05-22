@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.opensubagents.org/outcome/0.1.0/verdict.schema.json",
+  "title": "Verdict",
+  "description": "A graded result returned by a verifier. See specification/sections/03-verdict.md.",
+  "type": "object",
+  "required": ["spec_version", "dimensions", "overall", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$",
+      "description": "Open Outcome spec version this verdict was produced against (Requirement 3.1.3). SemVer."
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/DimensionScore" },
+      "description": "One or more dimension scores (Requirement 3.1.1)."
+    },
+    "overall": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "multipleOf": 0.1,
+      "description": "Arithmetic mean of dimension scores, rounded to one decimal place (Requirement 3.1.2)."
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "https://schemas.opensubagents.org/outcome/0.1.0/evidence.schema.json#/$defs/Citation" },
+      "description": "Citations the verdict considered (Requirement 3.1.4). MAY be empty."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-form notes from the verifier (Requirement 3.2.1)."
+    },
+    "verifier_id": {
+      "type": "string",
+      "description": "Identifier of the verifier that produced this verdict (Requirement 3.2.2)."
+    }
+  },
+  "$defs": {
+    "DimensionScore": {
+      "type": "object",
+      "required": ["name", "score", "justification"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Dimension name. MUST be unique within a verdict (Requirement 3.3.1)."
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Score in [1, 5] (Requirement 3.3.2)."
+        },
+        "justification": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One-line justification."
+        }
+      }
+    }
+  }
+}
