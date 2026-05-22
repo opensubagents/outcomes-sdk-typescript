@@ -18,12 +18,15 @@ import {
 } from "../src/conformance.js";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));
-const REPO_ROOT = resolve(HERE, "..", "..");
+// Post-repo-split: the canonical schemas live in this repo's schemas/ dir.
+// Conformance to the upstream spec is enforced by the spec-lint workflow in
+// opensubagents/outcomes which compares the bundled copy to its own schema/.
+const SCHEMAS_DIR = resolve(HERE, "..", "schemas");
 
 describe("schema bundling", () => {
   for (const name of ["outcome.schema.json", "verdict.schema.json", "evidence.schema.json"]) {
     it(`bundled ${name} equals canonical copy`, () => {
-      const canonical = JSON.parse(readFileSync(resolve(REPO_ROOT, "schema", name), "utf-8"));
+      const canonical = JSON.parse(readFileSync(resolve(SCHEMAS_DIR, name), "utf-8"));
       const bundled =
         name === "outcome.schema.json"
           ? outcomeSchema
