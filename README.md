@@ -8,6 +8,15 @@ TypeScript SDK for the [Open Outcome](https://github.com/opensubagents/outcomes)
 
 ## Install
 
+Published to **GitHub Packages**. One-time `.npmrc` config:
+
+```
+@opensubagents:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+Then:
+
 ```sh
 npm install @opensubagents/outcomes-sdk
 # or
@@ -15,6 +24,8 @@ pnpm add @opensubagents/outcomes-sdk
 # or
 bun add @opensubagents/outcomes-sdk
 ```
+
+See [INSTALL.md](./INSTALL.md) for full setup details. (A future release will also publish to npmjs.com.)
 
 ## Quickstart
 

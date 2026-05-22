@@ -4,9 +4,45 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      registry:
+        description: "Which registry to publish to"
+        required: true
+        default: "github"
+        type: choice
+        options:
+          - github
+          - npm
+          - both
 
 jobs:
-  publish:
+  publish-github:
+    if: ${{ github.event_name == 'push' || inputs.registry == 'github' || inputs.registry == 'both' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@opensubagents"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-npmjs:
+    if: ${{ inputs.registry == 'npm' || inputs.registry == 'both' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
